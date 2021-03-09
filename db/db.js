@@ -72,12 +72,15 @@ const Foods = db.define('foods', {
     type: STRING,
     allowNull: false,
   },
-  type: {
-    type: STRING,
-    allowNull: false,
-  },
   calories: {
     type: INTEGER,
+    allowNull: false,
+  },
+});
+
+const FoodGroups = db.define('foodgroups', {
+  name: {
+    type: STRING,
     allowNull: false,
   },
 });
@@ -96,6 +99,9 @@ Meals.belongsTo(Day);
 
 Meals.belongsToMany(Foods, { through: 'Meals_Foods' });
 Foods.belongsToMany(Meals, { through: 'Meals_Foods' });
+
+FoodGroups.hasMany(Foods);
+Foods.belongsTo(FoodGroups);
 
 const seed = async () => {
   try {
@@ -150,27 +156,117 @@ const seed = async () => {
     await march10workout.addExercises([running.id, shoulders.id]);
     await march11workout.addExercises([running.id, chest.id]);
 
-    const banana = Foods.create({
+    const [fruit, vegetable, dairy, protein, carb] = await Promise.all(
+      ['fruit', 'vegetable', 'dairy', 'protein', 'carb'].map((foodgroup) =>
+        FoodGroups.create({ name: foodgroup })
+      )
+    );
+
+    const banana = await Foods.create({
       name: 'banana',
-      type: 'fruit',
       calories: 50,
+      foodgroupId: fruit.id,
     });
-    const yogurtcup = Foods.create({
+    const yogurtcup = await Foods.create({
       name: 'yogurt cup',
-      type: 'dairy',
       calories: 100,
+      foodgroupId: dairy.id,
     });
-    const clementine = Foods.create({
+    const clementine = await Foods.create({
       name: 'clementine',
-      type: 'fruit',
       calories: 80,
+      foodgroupId: fruit.id,
+    });
+
+    const lentilSoup = await Foods.create({
+      name: 'lentil soup',
+      calories: 200,
+      foodgroupId: carb.id,
+    });
+    const rice = await Foods.create({
+      name: 'rice',
+      calories: 150,
+      foodgroupId: carb.id,
+    });
+    const chickenBreast = await Foods.create({
+      name: 'chicken breast',
+      calories: 250,
+      foodgroupId: protein.id,
+    });
+    const fish = await Foods.create({
+      name: 'fish',
+      calories: 250,
+      foodgroupId: protein.id,
+    });
+
+    const march9breakfast = await Meals.create({
+      name: 'post-workout breakfast',
+      contents: 'yogurt, banana',
+      totalCalories: 150,
+      dayId: march9.id,
+    });
+    const march9lunch = await Meals.create({
+      name: 'early lunch',
+      contents: 'rice, lentilsoup',
+      totalCalories: 350,
+      dayId: march9.id,
+    });
+    const march9dinner = await Meals.create({
+      name: 'early dinner',
+      contents: 'rice, chicken',
+      totalCalories: 500,
+      dayId: march9.id,
     });
 
     const march10breakfast = await Meals.create({
       name: 'post-workout breakfast',
-      contents: 'yogurt, banana',
-      totalCalories: 150,
+      contents: 'yogurt, banana, clementine',
+      totalCalories: 250,
+      dayId: march10.id,
     });
+    const march10lunch = await Meals.create({
+      name: 'lunch',
+      contents: 'rice, chicken',
+      totalCalories: 400,
+      dayId: march10.id,
+    });
+    const march10dinner = await Meals.create({
+      name: 'dinner',
+      contents: 'rice, dal',
+      totalCalories: 400,
+      dayId: march10.id,
+    });
+
+    const march11breakfast = await Meals.create({
+      name: 'late breakfast',
+      contents: 'banana, clementine',
+      totalCalories: 200,
+      dayId: march11.id,
+    });
+    const march11lunch = await Meals.create({
+      name: 'late lunch',
+      contents: 'rice, fish',
+      totalCalories: 400,
+      dayId: march11.id,
+    });
+    const march11dinner = await Meals.create({
+      name: 'early dinner',
+      contents: 'rice, chicken',
+      totalCalories: 400,
+      dayId: march11.id,
+    });
+
+    await march9breakfast.addFoods([yogurtcup.id, banana.id]);
+    await march9lunch.addFoods([rice.id, lentilSoup.id]);
+    await march9dinner.addFoods([rice.id, chickenBreast.id]);
+
+    await march10breakfast.addFoods([yogurtcup.id, banana.id, clementine.id]);
+    await march10lunch.addFoods([rice.id, chickenBreast.id]);
+    await march10dinner.addFoods([rice.id, lentilSoup.id]);
+
+    await march11breakfast.addFoods([banana.id, clementine.id]);
+    await march11lunch.addFoods([rice.id, fish.id]);
+    await march11dinner.addFoods([rice.id, chickenBreast.id]);
   } catch (error) {
     console.log(error);
   }
