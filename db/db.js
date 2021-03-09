@@ -1,12 +1,4 @@
-const {
-  Sequelize,
-  STRING,
-  INTEGER,
-  DATE,
-  INET,
-  MEDIUMINT,
-  ExclusionConstraintError,
-} = require('sequelize');
+const { Sequelize, STRING, INTEGER, DATE } = require('sequelize');
 const db = new Sequelize(
   process.env.DATABASE_URL ||
     'postgres://localhost/dealers-choice-workoutjournal'
@@ -281,4 +273,16 @@ const init = async () => {
   }
 };
 
-module.exports = init;
+module.exports = {
+  init,
+  db,
+  models: {
+    Users,
+    Day,
+    Workouts,
+    Exercises,
+    Meals,
+    Foods,
+    FoodGroups,
+  },
+};
