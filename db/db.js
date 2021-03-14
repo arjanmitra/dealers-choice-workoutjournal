@@ -21,7 +21,7 @@ const Users = db.define('users', {
 
 const Day = db.define('days', {
   date: {
-    type: DATE,
+    type: STRING,
     allowNull: false,
   },
 });
@@ -104,7 +104,7 @@ const seed = async () => {
     });
     const [march9, march10, march11] = await Promise.all(
       ['march9', 'march10', 'march11'].map((date) =>
-        Day.create({ date: date + ',2020', userId: arjan.id })
+        Day.create({ date: date, userId: arjan.id })
       )
     );
     const [march9workout, march10workout, march11workout] = await Promise.all(
