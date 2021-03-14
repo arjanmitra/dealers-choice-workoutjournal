@@ -68,6 +68,19 @@ app.get('/users/:id/days', async (req, res, next) => {
   }
 });
 
+app.post('/users/:id/days/:data', async (req, res, next) => {
+  //console.log(req);
+  try {
+    const newDay = await Day.create({
+      date: req.params.data,
+      userId: req.params.id,
+    });
+    res.status(201).send(newDay);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.get('/users/:id/days/:date', async (req, res, next) => {
   try {
     const userDate = await Users.findAll({

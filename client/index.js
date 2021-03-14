@@ -19,6 +19,7 @@ class App extends React.Component {
     };
     this.loadUserDays = this.loadUserDays.bind(this);
     this.loadUserDayData = this.loadUserDayData.bind(this);
+    this.createUserDay = this.createUserDay.bind(this);
   }
   async componentDidMount() {
     try {
@@ -54,12 +55,25 @@ class App extends React.Component {
     }
   }
 
+  async createUserDay(data) {
+    try {
+      await axios.post(`users/${this.state.selectedUser}/days/${data}`);
+      this.loadUserDays(this.state.selectedUser);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     return (
       <div>
         <h1>Workout Journal</h1>
         <Users users={this.state.users} loadUserDays={this.loadUserDays} />
-        <Days days={this.state.days} loadUserDayData={this.loadUserDayData} />
+        <Days
+          days={this.state.days}
+          loadUserDayData={this.loadUserDayData}
+          createUserDay={this.createUserDay}
+        />
 
         <Workouts workouts={this.state.workouts} />
 
