@@ -6,6 +6,7 @@ const {
 const morgan = require('morgan');
 const express = require('express');
 const path = require('path');
+const { urlencoded } = require('express');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -21,8 +22,12 @@ const serverInit = () => {
 serverInit();
 
 app.use(morgan('dev'));
+app.use(express.urlencoded());
+app.use(express.json());
 app.use('/dist', express.static(path.join(__dirname, '../dist')));
 app.use('/public', express.static(path.join(__dirname, '../public')));
+
+//get routes
 
 app.get('/', async (req, res, next) => {
   try {
@@ -63,19 +68,6 @@ app.get('/users/:id/days', async (req, res, next) => {
       },
     });
     res.send(userDays[0].days);
-  } catch (error) {
-    next(error);
-  }
-});
-
-app.post('/users/:id/days/:data', async (req, res, next) => {
-  //console.log(req);
-  try {
-    const newDay = await Day.create({
-      date: req.params.data,
-      userId: req.params.id,
-    });
-    res.status(201).send(newDay);
   } catch (error) {
     next(error);
   }
@@ -145,6 +137,58 @@ app.get('/users/:id/days/:date/meals', async (req, res, next) => {
       },
     });
     res.send(userMeals[0].days[0].meals);
+  } catch (error) {
+    next(error);
+  }
+});
+
+//post routes
+
+app.post('/users/:id/days/:data', async (req, res, next) => {
+  //console.log(req);
+  try {
+    const newDay = await Day.create({
+      date: req.params.data,
+      userId: req.params.id,
+    });
+    res.status(201).send(newDay);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/users/:id/days/:date/workouts/:data', async (req, res, next) => {
+  try {
+    const day = await Day.findOne({
+      where: {
+        date: req.params.date,
+      },
+    });
+    const newWorkout = await Workouts.create({
+      name: req.params.data,
+      duration: 1,
+      dayId: day.id,
+    });
+    res.status(201).send(newWorkout);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/users/:id/days/:date/meals/', async (req, res, next) => {
+  try {
+    const day = await Day.findOne({
+      where: {
+        date: req.params.date,
+      },
+    });
+    const newMeal = await Meals.create({
+      name: req.body.mealName,
+      contents: req.body.mealContents,
+      totalCalories: req.body.mealCalories,
+      dayId: day.id,
+    });
+    res.status(201).send(newMeal);
   } catch (error) {
     next(error);
   }

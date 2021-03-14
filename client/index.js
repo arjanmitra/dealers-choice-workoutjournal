@@ -12,7 +12,7 @@ class App extends React.Component {
     this.state = {
       users: [],
       selectedUser: 0,
-      selectedWorkout: '',
+      selectedWorkoutDate: '',
       days: [],
       workouts: [],
       meals: [],
@@ -20,6 +20,8 @@ class App extends React.Component {
     this.loadUserDays = this.loadUserDays.bind(this);
     this.loadUserDayData = this.loadUserDayData.bind(this);
     this.createUserDay = this.createUserDay.bind(this);
+    this.createUserDayWorkout = this.createUserDayWorkout.bind(this);
+    this.createUserDayMeal = this.createUserDayMeal.bind(this);
   }
   async componentDidMount() {
     try {
@@ -49,7 +51,7 @@ class App extends React.Component {
       const meals = (
         await axios.get(`/users/${this.state.selectedUser}/days/${date}/meals`)
       ).data;
-      this.setState({ meals, workouts, selectedWorkout: date });
+      this.setState({ meals, workouts, selectedWorkoutDate: date });
     } catch (error) {
       console.log(error);
     }
@@ -59,6 +61,33 @@ class App extends React.Component {
     try {
       await axios.post(`users/${this.state.selectedUser}/days/${data}`);
       this.loadUserDays(this.state.selectedUser);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async createUserDayWorkout(data) {
+    try {
+      await axios.post(
+        `users/${this.state.selectedUser}/days/${this.state.selectedWorkoutDate}/workouts/${data}`
+      );
+      this.loadUserDayData(this.state.selectedWorkoutDate);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async createUserDayMeal(data) {
+    try {
+      await axios.post(
+        `users/${this.state.selectedUser}/days/${this.state.selectedWorkoutDate}/meals/`,
+        {
+          mealName: data[0],
+          mealContents: data[1],
+          mealCalories: data[2],
+        }
+      );
+      this.loadUserDayData(this.state.selectedWorkoutDate);
     } catch (error) {
       console.log(error);
     }
@@ -75,9 +104,17 @@ class App extends React.Component {
           createUserDay={this.createUserDay}
         />
 
-        <Workouts workouts={this.state.workouts} />
+        <Workouts
+          workouts={this.state.workouts}
+          createUserDayWorkout={this.createUserDayWorkout}
+          selectedWorkoutDate={this.state.selectedWorkoutDate}
+        />
 
-        <Meals meals={this.state.meals} />
+        <Meals
+          meals={this.state.meals}
+          createUserDayMeal={this.createUserDayMeal}
+          selectedWorkoutDate={this.state.selectedWorkoutDate}
+        />
       </div>
     );
   }
