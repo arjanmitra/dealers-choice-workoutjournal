@@ -10,20 +10,15 @@ import Meals from './components/Meals';
 class App extends React.Component {
   constructor() {
     super();
-    this.state = {
-      users: [],
-      selectedUser: 0,
-      selectedWorkoutDate: '',
-      days: [],
-      workouts: [],
-      meals: [],
-    };
+    this.state = store.getState();
     this.loadUserDays = this.loadUserDays.bind(this);
     this.loadUserDayData = this.loadUserDayData.bind(this);
     this.createUserDay = this.createUserDay.bind(this);
     this.createUserDayWorkout = this.createUserDayWorkout.bind(this);
     this.createUserDayMeal = this.createUserDayMeal.bind(this);
     this.deleteMeal = this.deleteMeal.bind(this);
+    this.deleteWorkout = this.deleteWorkout.bind(this);
+    this.deleteDay = this.deleteDay.bind(this);
   }
   async componentDidMount() {
     try {
@@ -116,10 +111,38 @@ class App extends React.Component {
     }
   }
 
+  async deleteDay(dayId) {
+    try {
+      await axios.delete('/days/', {
+        data: {
+          dayId: dayId,
+        },
+      });
+      this.loadUserDays(this.state.selectedUser);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async deleteWorkout(workoutId) {
+    try {
+      await axios.delete('/workouts/', {
+        data: {
+          workoutId: workoutId,
+        },
+      });
+      this.loadUserDayData(this.state.selectedWorkoutDate);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async deleteMeal(mealId) {
     try {
-      await axios.delete(`/meals/`, {
-        mealId: mealId,
+      await axios.delete('/meals/', {
+        data: {
+          mealId: mealId,
+        },
       });
       this.loadUserDayData(this.state.selectedWorkoutDate);
     } catch (error) {
@@ -136,12 +159,15 @@ class App extends React.Component {
           days={this.state.days}
           loadUserDayData={this.loadUserDayData}
           createUserDay={this.createUserDay}
+          selectedUser={this.state.selectedUser}
+          deleteDay={this.deleteDay}
         />
 
         <Workouts
           workouts={this.state.workouts}
           createUserDayWorkout={this.createUserDayWorkout}
           selectedWorkoutDate={this.state.selectedWorkoutDate}
+          deleteWorkout={this.deleteWorkout}
         />
 
         <Meals

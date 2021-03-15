@@ -1,6 +1,15 @@
 import { createStore } from 'redux';
 
-const store = createStore((state = {}, action) => {
+const initialState = {
+  users: [],
+  selectedUser: 0,
+  selectedWorkoutDate: '',
+  days: [],
+  workouts: [],
+  meals: [],
+};
+
+const store = createStore((state = initialState, action) => {
   if (action.type === 'LOAD_USERS') {
     state = { ...state, users: action.payload.users };
   } else if (action.type === 'LOAD_DAYS') {

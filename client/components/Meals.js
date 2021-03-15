@@ -11,16 +11,7 @@ export default function Meals(props) {
             <div>
               {meal.name}, {meal.contents}
             </div>
-            <form method="POST" action="/meals?_method=DELETE">
-              <button
-                type="submit"
-                onClick={() => {
-                  deleteMeal(meal.id);
-                }}
-              >
-                x
-              </button>
-            </form>
+            <button onClick={() => deleteMeal(meal.id)}>x</button>
           </div>
         );
       })}

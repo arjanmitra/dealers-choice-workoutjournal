@@ -6,7 +6,6 @@ const {
 const morgan = require('morgan');
 const express = require('express');
 const path = require('path');
-const { urlencoded } = require('express');
 const methodOverride = require('method-override');
 
 const app = express();
@@ -24,7 +23,7 @@ serverInit();
 
 app.use(morgan('dev'));
 app.use(methodOverride('_method'));
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use('/dist', express.static(path.join(__dirname, '../dist')));
 app.use('/public', express.static(path.join(__dirname, '../public')));
@@ -198,15 +197,51 @@ app.post('/users/:id/days/:date/meals/', async (req, res, next) => {
 
 //delete routes
 
+app.delete('/days/', async (req, res, next) => {
+  try {
+    await Meals.destroy({
+      where: {
+        dayId: req.body.dayId,
+      },
+    });
+    await Workouts.destroy({
+      where: {
+        dayId: req.body.dayId,
+      },
+    });
+    await Day.destroy({
+      where: {
+        id: req.body.dayId,
+      },
+    });
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.delete('/workouts/', async (req, res, next) => {
+  try {
+    await Workouts.destroy({
+      where: {
+        id: req.body.workoutId,
+      },
+    });
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.delete('/meals/', async (req, res, next) => {
-  console.log(req.body);
   try {
     await Meals.destroy({
       where: {
         id: req.body.mealId,
       },
     });
+    res.sendStatus(204);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });

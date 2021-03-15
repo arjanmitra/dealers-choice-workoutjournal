@@ -1,7 +1,13 @@
 import React from 'react';
 
 export default function Days(props) {
-  const { days, loadUserDayData, createUserDay } = props;
+  const {
+    days,
+    loadUserDayData,
+    createUserDay,
+    deleteDay,
+    selectedUser,
+  } = props;
   return (
     <div>
       {days.map((day) => {
@@ -14,11 +20,13 @@ export default function Days(props) {
             >
               {day.date}
             </div>
-            <button key={day.id}>x</button>
+            <button key={day.id} onClick={() => deleteDay(day.id)}>
+              x
+            </button>
           </div>
         );
       })}
-      {days.length !== 0 ? (
+      {days.length !== 0 || selectedUser ? (
         <div>
           Add a new workout day!
           <input id="newday"></input>

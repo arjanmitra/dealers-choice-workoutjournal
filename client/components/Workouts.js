@@ -1,7 +1,12 @@
 import React from 'react';
 
 export default function Workouts(props) {
-  const { workouts, createUserDayWorkout, selectedWorkoutDate } = props;
+  const {
+    workouts,
+    createUserDayWorkout,
+    selectedWorkoutDate,
+    deleteWorkout,
+  } = props;
   return (
     <div>
       {workouts.length !== 0 || selectedWorkoutDate !== '' ? (
@@ -11,7 +16,7 @@ export default function Workouts(props) {
         return (
           <div key={workout.id}>
             <div>{workout.name}</div>
-            <button>x</button>
+            <button onClick={() => deleteWorkout(workout.id)}>x</button>
           </div>
         );
       })}
