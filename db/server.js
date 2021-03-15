@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const express = require('express');
 const path = require('path');
 const { urlencoded } = require('express');
+const methodOverride = require('method-override');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -22,6 +23,7 @@ const serverInit = () => {
 serverInit();
 
 app.use(morgan('dev'));
+app.use(methodOverride('_method'));
 app.use(express.urlencoded());
 app.use(express.json());
 app.use('/dist', express.static(path.join(__dirname, '../dist')));
@@ -191,5 +193,20 @@ app.post('/users/:id/days/:date/meals/', async (req, res, next) => {
     res.status(201).send(newMeal);
   } catch (error) {
     next(error);
+  }
+});
+
+//delete routes
+
+app.delete('/meals/', async (req, res, next) => {
+  console.log(req.body);
+  try {
+    await Meals.destroy({
+      where: {
+        id: req.body.mealId,
+      },
+    });
+  } catch (error) {
+    console.log(error);
   }
 });

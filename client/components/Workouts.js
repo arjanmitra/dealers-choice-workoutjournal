@@ -8,7 +8,12 @@ export default function Workouts(props) {
         <h4>Workouts</h4>
       ) : null}
       {workouts.map((workout) => {
-        return <p key={workout.id}>{workout.name}</p>;
+        return (
+          <div key={workout.id}>
+            <div>{workout.name}</div>
+            <button>x</button>
+          </div>
+        );
       })}
       {workouts.length !== 0 || selectedWorkoutDate !== '' ? (
         <div>
@@ -18,6 +23,10 @@ export default function Workouts(props) {
             id="newworkoutbutton"
             onClick={() => {
               const newWorkoutInput = document.querySelector('#newworkout');
+              if (newWorkoutInput.value === '') {
+                alert('Please add workout details!');
+                return;
+              }
               createUserDayWorkout(newWorkoutInput.value);
               newWorkoutInput.value = null;
             }}

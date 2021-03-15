@@ -1,15 +1,27 @@
 import React from 'react';
 
 export default function Meals(props) {
-  const { meals, createUserDayMeal, selectedWorkoutDate } = props;
+  const { meals, createUserDayMeal, selectedWorkoutDate, deleteMeal } = props;
   return (
     <div>
       {meals.length !== 0 || selectedWorkoutDate !== '' ? <h4>Meals</h4> : null}
       {meals.map((meal) => {
         return (
-          <p key={meal.id}>
-            {meal.name}, {meal.contents}
-          </p>
+          <div key={meal.id}>
+            <div>
+              {meal.name}, {meal.contents}
+            </div>
+            <form method="POST" action="/meals?_method=DELETE">
+              <button
+                type="submit"
+                onClick={() => {
+                  deleteMeal(meal.id);
+                }}
+              >
+                x
+              </button>
+            </form>
+          </div>
         );
       })}
 

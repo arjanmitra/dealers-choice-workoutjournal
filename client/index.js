@@ -22,6 +22,7 @@ class App extends React.Component {
     this.createUserDay = this.createUserDay.bind(this);
     this.createUserDayWorkout = this.createUserDayWorkout.bind(this);
     this.createUserDayMeal = this.createUserDayMeal.bind(this);
+    this.deleteMeal = this.deleteMeal.bind(this);
   }
   async componentDidMount() {
     try {
@@ -93,6 +94,17 @@ class App extends React.Component {
     }
   }
 
+  async deleteMeal(mealId) {
+    try {
+      await axios.delete(`/meals/`, {
+        mealId: mealId,
+      });
+      this.loadUserDayData(this.state.selectedWorkoutDate);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     return (
       <div>
@@ -114,6 +126,7 @@ class App extends React.Component {
           meals={this.state.meals}
           createUserDayMeal={this.createUserDayMeal}
           selectedWorkoutDate={this.state.selectedWorkoutDate}
+          deleteMeal={this.deleteMeal}
         />
       </div>
     );

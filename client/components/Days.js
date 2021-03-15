@@ -6,13 +6,15 @@ export default function Days(props) {
     <div>
       {days.map((day) => {
         return (
-          <div
-            key={day.id}
-            onClick={() => {
-              loadUserDayData(day.date);
-            }}
-          >
-            {day.date}
+          <div key={day.id}>
+            <div
+              onClick={() => {
+                loadUserDayData(day.date);
+              }}
+            >
+              {day.date}
+            </div>
+            <button key={day.id}>x</button>
           </div>
         );
       })}
@@ -24,6 +26,10 @@ export default function Days(props) {
             id="newdaybutton"
             onClick={() => {
               const newDayInput = document.querySelector('#newday');
+              if (newDayInput.value === '') {
+                alert('Please enter in a day!');
+                return;
+              }
               createUserDay(newDayInput.value);
               newDayInput.value = null;
             }}
