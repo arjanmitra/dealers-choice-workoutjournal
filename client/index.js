@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import store from './store';
 import Users from './components/Users';
 import Days from './components/Days';
 import Workouts from './components/Workouts';
@@ -27,7 +28,15 @@ class App extends React.Component {
   async componentDidMount() {
     try {
       const users = (await axios.get('/users')).data;
-      this.setState({ users });
+      store.subscribe(() => {
+        this.setState(store.getState());
+      });
+      store.dispatch({
+        type: 'LOAD_USERS',
+        payload: {
+          users: users,
+        },
+      });
     } catch (error) {
       console.log(error);
     }
@@ -36,7 +45,13 @@ class App extends React.Component {
   async loadUserDays(id) {
     try {
       const days = (await axios.get(`/users/${id}/days`)).data;
-      this.setState({ days, selectedUser: id });
+      store.dispatch({
+        type: 'LOAD_DAYS',
+        payload: {
+          days: days,
+          selectedUser: id,
+        },
+      });
     } catch (error) {
       console.log(error);
     }
@@ -52,7 +67,14 @@ class App extends React.Component {
       const meals = (
         await axios.get(`/users/${this.state.selectedUser}/days/${date}/meals`)
       ).data;
-      this.setState({ meals, workouts, selectedWorkoutDate: date });
+      store.dispatch({
+        type: 'LOAD_DAYS_DATA',
+        payload: {
+          workouts: workouts,
+          meals: meals,
+          selectedWorkoutDate: date,
+        },
+      });
     } catch (error) {
       console.log(error);
     }
