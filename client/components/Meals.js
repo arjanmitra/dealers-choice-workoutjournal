@@ -7,7 +7,7 @@ export default function Meals(props) {
       {meals.length !== 0 || selectedWorkoutDate !== '' ? <h4>Meals</h4> : null}
       {meals.map((meal) => {
         return (
-          <div key={meal.id}>
+          <div className="content" key={meal.id}>
             <div>
               {meal.name}, {meal.contents}
             </div>

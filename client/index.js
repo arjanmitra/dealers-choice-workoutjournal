@@ -119,6 +119,15 @@ class App extends React.Component {
         },
       });
       this.loadUserDays(this.state.selectedUser);
+
+      store.dispatch({
+        type: 'DELETE_DAY',
+        payload: {
+          workouts: [],
+          meals: [],
+          selectedWorkoutDate: '',
+        },
+      });
     } catch (error) {
       console.log(error);
     }

@@ -9,10 +9,10 @@ export default function Days(props) {
     selectedUser,
   } = props;
   return (
-    <div>
+    <div id="mainDaysDiv">
       {days.map((day) => {
         return (
-          <div key={day.id}>
+          <div className="content" key={day.id}>
             <div
               onClick={() => {
                 loadUserDayData(day.date);
@@ -27,7 +27,7 @@ export default function Days(props) {
         );
       })}
       {days.length !== 0 || selectedUser ? (
-        <div>
+        <div id="newDayDiv">
           Add a new workout day!
           <input id="newday"></input>
           <button

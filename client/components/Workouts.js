@@ -14,7 +14,7 @@ export default function Workouts(props) {
       ) : null}
       {workouts.map((workout) => {
         return (
-          <div key={workout.id}>
+          <div className="content" key={workout.id}>
             <div>{workout.name}</div>
             <button onClick={() => deleteWorkout(workout.id)}>x</button>
           </div>

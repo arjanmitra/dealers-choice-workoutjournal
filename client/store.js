@@ -25,6 +25,13 @@ const store = createStore((state = initialState, action) => {
       meals: action.payload.meals,
       selectedWorkoutDate: action.payload.selectedWorkoutDate,
     };
+  } else if (action.type === 'DELETE_DAY') {
+    state = {
+      ...state,
+      workouts: action.payload.workouts,
+      meals: action.payload.meals,
+      selectedWorkoutDate: action.payload.selectedWorkoutDate,
+    };
   }
   return state;
 });
