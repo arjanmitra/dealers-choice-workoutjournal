@@ -38,6 +38,7 @@ app.get('/', async (req, res, next) => {
   }
 });
 
+//these routes are set up BEAUTIFULLY
 app.get('/users', async (req, res, next) => {
   try {
     const users = await Users.findAll();
@@ -49,6 +50,7 @@ app.get('/users', async (req, res, next) => {
 
 app.get('/users/:id', async (req, res, next) => {
   try {
+    //could also use Users.findByPk(req.params.id)
     const user = await Users.findAll({
       where: {
         id: req.params.id,
@@ -68,6 +70,8 @@ app.get('/users/:id/days', async (req, res, next) => {
         id: req.params.id,
       },
     });
+    //If you're only sending the days back, you could also
+    //start with the Day model instead of the User model
     res.send(userDays[0].days);
   } catch (error) {
     next(error);
@@ -197,6 +201,10 @@ app.post('/users/:id/days/:date/meals/', async (req, res, next) => {
 
 //delete routes
 
+/* delete routes should include a parameter for id, so it's in the path
+instead of the req.body */
+
+// '/days/:dayId'
 app.delete('/days/', async (req, res, next) => {
   try {
     await Meals.destroy({
@@ -220,6 +228,7 @@ app.delete('/days/', async (req, res, next) => {
   }
 });
 
+// '/workouts/:workoutId'
 app.delete('/workouts/', async (req, res, next) => {
   try {
     await Workouts.destroy({
@@ -233,6 +242,8 @@ app.delete('/workouts/', async (req, res, next) => {
   }
 });
 
+
+// '/meals/:mealId'
 app.delete('/meals/', async (req, res, next) => {
   try {
     await Meals.destroy({

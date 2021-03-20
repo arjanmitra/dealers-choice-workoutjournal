@@ -11,6 +11,9 @@ class App extends React.Component {
   constructor() {
     super();
     this.state = store.getState();
+    //now that we know a little more about react-redux,
+    //what do you think this would look like if refactored to
+    //use react-redux?
     this.loadUserDays = this.loadUserDays.bind(this);
     this.loadUserDayData = this.loadUserDayData.bind(this);
     this.createUserDay = this.createUserDay.bind(this);
@@ -77,6 +80,17 @@ class App extends React.Component {
 
   async createUserDay(data) {
     try {
+      //typically what you want to do here is capture the newObject that the server responds with
+      //and dispatch it to the store. it means you can accomplish the same functionality here in just one server call
+      //your reducer should be set up to handle an action like CREATE_USER_DAY
+      //it would look something like this:
+      //const newDay = await axios.post(/*path here*/)
+      /*dispatch {
+        type: 'CREATE_USER_DAY'
+        payload: {
+          newDay
+        }
+      }*/
       await axios.post(`users/${this.state.selectedUser}/days/${data}`);
       this.loadUserDays(this.state.selectedUser);
     } catch (error) {
@@ -86,6 +100,17 @@ class App extends React.Component {
 
   async createUserDayWorkout(data) {
     try {
+      //same as above, dispatch new object to store instead of getting all the data over again
+      //set up a CREATE_USER_WORKOUT action in your reducer
+      //const newWorkout = await axios.post(/*path here*/)
+      /* dispatch({
+        type: 'CREATE_USER_WORKOUT',
+        payload: {
+          newWorkout
+        }
+      })
+
+      */
       await axios.post(
         `users/${this.state.selectedUser}/days/${this.state.selectedWorkoutDate}/workouts/${data}`
       );

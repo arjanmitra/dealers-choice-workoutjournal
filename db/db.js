@@ -21,6 +21,7 @@ const Users = db.define('users', {
 
 const Day = db.define('days', {
   date: {
+    //any reason why you didnt use DATE as the dataType?
     type: STRING,
     allowNull: false,
   },
@@ -71,23 +72,36 @@ const Foods = db.define('foods', {
 });
 
 const FoodGroups = db.define('foodgroups', {
+  //i dont believe there are unlimited foodgroups? maybe this should be a different DataType?
+  //maybe https://sequelize.org/master/class/lib/data-types.js~ENUM.html
   name: {
     type: STRING,
     allowNull: false,
   },
 });
 
+/* think about what this would look like if you wanted to expand this application
+for example, what if you had a trainer who wanted to look at a day and see which of his
+trainees completed a workout on that day?
+i would recommend having a many-to-many relationship between users and days,
+so there is one representation of a day in your database for each date
+that way the day model would be more like a calendar
+OR since the only property on the Day model is the date, then date could also just be
+a property on the Meals and Workouts models.
+i think that would still give you all of the functionality you need*/
 Users.hasMany(Day);
 Day.belongsTo(Users);
 
 Day.hasMany(Workouts);
 Workouts.belongsTo(Day);
 
+//with the feedback above, i think there should also be an association between Users and Workouts
 Workouts.belongsToMany(Exercises, { through: 'Workouts_Exercises' });
 Exercises.belongsToMany(Workouts, { through: 'Workouts_Exercises' });
 
 Day.hasMany(Meals);
 Meals.belongsTo(Day);
+//meals and users?
 
 Meals.belongsToMany(Foods, { through: 'Meals_Foods' });
 Foods.belongsToMany(Meals, { through: 'Meals_Foods' });
